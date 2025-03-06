@@ -20,7 +20,7 @@ const {
   };
   
 
-export  const chatSession = model.startChat({
+    export const chatSession = model.startChat({
       generationConfig,
       history: [
       ],

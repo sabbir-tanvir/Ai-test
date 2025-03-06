@@ -1,7 +1,7 @@
 "use client";
 
 import { MessgaesContext } from '@/Contex/MessagesContex';
-import { useConvex } from 'convex/react';
+import { useConvex, useMutation } from 'convex/react';
 import { useParams } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react';
 import { api } from '../../convex/_generated/api';
@@ -10,9 +10,10 @@ import Lookup from "../../data/Lookup";
 
 import Colors from '../../data/Colors';
 import { UserDetailsContext } from '../../Contex/UserDetailsContext';
-import { ArrowRight, Link } from 'lucide-react';
+import { ArrowRight, Link, Loader2Icon } from 'lucide-react';
 import axios from 'axios';
 import Prompt from '@/data/Prompt';
+import Markdown from 'react-markdown'
 
 
 
@@ -22,8 +23,10 @@ function ChatView() {
 
     const { userDetails, setUserDetails } = useContext(UserDetailsContext);
     const { messages, setMessages } = useContext(MessgaesContext);
-
+    const [loading, setLoading] = useState(false);
     const [userInput, setUserInput] = useState('');
+    const UpdateMessages = useMutation(api.workspace.UpdateMessages);
+
 
     useEffect(() => {
         id && GetWorkspaceData();
@@ -36,50 +39,77 @@ function ChatView() {
 
         setMessages(result?.messages);
         console.log(result);
-    };
-
-    const GetAiResponse = async () => {
-        const PROMPT = JSON.stringify(messages) + Prompt.CHAT_PROMPT;
-        const result = await axios.post('/api/ai-chat', {
-            prompt: PROMPT
-        });
-        console.log(result.data.result);
     }
-
     useEffect(() => {
         if (messages?.length > 0) {
-            const role = messages[messages.length - 1].role;
-            if (role === 'users') {
+            const role = messages[messages?.length - 1].role;
+            if (role == 'users') {
                 GetAiResponse();
             }
         }
     }, [messages])
 
+    const GetAiResponse = async () => {
+        setLoading(true);
+        const PROMPT = JSON.stringify(messages) + Prompt.CHAT_PROMPT;
+        const result = await axios.post('/api/ai-chat', {
+            prompt: PROMPT
+        });
+        const aiRes= {
+            role: 'ai',
+            content: result.data.result
+        }
+        setMessages(prev => [...prev, aiRes])
+        await UpdateMessages({
+            messages:[...messages,aiRes],
+            WorkSpaceId:id
+        })
+        setLoading(false);
+    }
+
+    const onGenerate = async (input) => {
+        setMessages(prev => [...prev, {
+            role: 'users',
+            content: input
+        }])
+        setUserInput('');
+    }
+
 
     return (
         <div className='reletive h-[85vh] flex flex-col'>
-            <div className='flex-1 overflow-y-scroll p-5 '>
-                {Array.isArray(messages) && messages?.map((msg, index) => (
+            <div className='flex-1 overflow-y-scroll p-5 scrollbar-hide '>
+                {messages?.map((msg, index) => (
                     <div key={index}
                         className='p-3 rounded-lg mb-2 flex gap-2 items-start'
                         style={{
                             backgroundColor: Colors.CHAT_BACKGROUND
                         }}>
-                        {msg.role === 'users' && userDetails?.picture && (
-                            <div className="flex items-center gap-2 mb-2">
-                                <Image
-                                    src={userDetails.picture}
-                                    alt="User"
-                                    width={40}
-                                    height={40}
-                                    className="rounded-full"
-                                    unoptimized={true} // Add this for external images that might cause issues
-                                />
-                                <h2>{msg.content}</h2>
+                        {msg.role === 'users' &&
+
+                            <Image
+                                src={userDetails.picture}
+                                alt="User"
+                                width={40}
+                                height={40}
+                                className="rounded-full"
+                            />}
+                            <div className='flex flex-col'>
+                            <Markdown >{msg.content}</Markdown>
+
                             </div>
-                        )}
+                        
+
+
                     </div>
                 ))}
+                {loading && <div className='p-3 rounded-lg mb-2 flex gap-2 items-start leading-5'
+                    style={{
+                        backgroundColor:Colors.CHAT_BACKGROUND}}
+                    >
+                    <Loader2Icon className='animate-spin' />
+                    <h2>Genarating response...</h2>
+                </div>}
             </div>
 
             {/* Input Section */}
@@ -88,6 +118,7 @@ function ChatView() {
             >
                 <div className="flex gap-2">
                     <textarea placeholder={Lookup.INPUT_PLACEHOLDER}
+                    value={userInput}
                         onChange={(event) => setUserInput(event.target.value)}
                         className="outline-none bg-transparent w-full h-32 max-h-56 resize-none"
                     ></textarea>

@@ -28,9 +28,20 @@ export const GetWorkspace = query({
     },
     handler: async (ctx, args) => {
         // Fetch the workspace data based on the provided ID
-        const workspace = await ctx.db
-            .query("workspaces")
         const result = await ctx.db.get(args.WorkSpaceId);
+        return result;
+    }
+})
+
+export const UpdateMessages = mutation({
+    args:{
+        WorkSpaceId:v.id("workspace"),
+        messages:v.any()
+    },
+    handler:async(ctx,args)=>{
+        const result = await ctx.db.patch(args.WorkSpaceId,{
+            messages:args.messages
+        });
         return result;
     }
 })
