@@ -32,13 +32,13 @@ function Hero() {
             return;
         }
         setMessages({
-            role: 'user',
+            role: 'users',
             content: input
         })
         const workspaceId=await CreateWorkspace({
             user:userDetails._id,
             messages:[{
-                role:'user',
+                role:'users',
                 content:input
             }]
 

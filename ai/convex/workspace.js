@@ -24,7 +24,6 @@ export const CreateWorkspace = mutation({
 // Function to get workspace data including messages
 export const GetWorkspace = query({
     args: {
-        WorkSpaceId: v.string(),
         WorkSpaceId: v.id("workspace"),
     },
     handler: async (ctx, args) => {

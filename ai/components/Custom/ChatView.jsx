@@ -3,7 +3,7 @@
 import { MessgaesContext } from '@/Contex/MessagesContex';
 import { useConvex } from 'convex/react';
 import { useParams } from 'next/navigation';
-import React, { use, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { api } from '../../convex/_generated/api';
 import Image from 'next/image';
 import Lookup from "../../data/Lookup";
@@ -39,13 +39,13 @@ function ChatView () {
     return (
         <div className='reletive h-[85vh] flex flex-col'>
             <div className='flex-1 overflow-y-scroll p-5 '>
-                {messages?.map((msg, index) => (
+                {Array.isArray(messages) && messages?.map((msg, index) => (
                     <div key={index}
                         className='p-3 rounded-lg mb-2 flex gap-2 items-start'
                         style={{
                             backgroundColor: Colors.CHAT_BACKGROUND
                         }}>
-                        {msg.role === 'user' && userDetails?.picture && (
+                        {msg.role === 'users' && userDetails?.picture && (
                             <div className="flex items-center gap-2 mb-2">
                                 <Image
                                     src={userDetails.picture}
