@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   SandpackProvider,
   SandpackLayout,
@@ -10,13 +10,38 @@ import {
 } from "@codesandbox/sandpack-react";
 import Lookup from '@/data/Lookup';
 import { Code, Play, Settings, Moon, Sun, ChevronDown } from 'lucide-react';
+import axios from 'axios';
+import Prompt from '@/data/Prompt';
+import { MessgaesContext } from '@/Contex/MessagesContex';
 
 function CodeView() {
   const [activeTab, setActiveTab] = useState('code');
   const [files, setFiles] = useState(Lookup.DEFAULT_FILE);
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const [selectedFile, setSelectedFile] = useState('Default Example');
+    const { messages, setMessages } = useContext(MessgaesContext);
 
+  useEffect(() => {
+    if (messages?.length > 0) {
+      const role = messages[messages?.length - 1].role;
+      if (role == 'users') {
+        GenerateAiCode();
+      }
+    }
+  }, [messages])
+
+  const GenerateAiCode =async () => {
+    const PROMPT = messages[messages?.length - 1].content + " " + Prompt.CODE_GEN_PROMPT;
+    const result = axios.post('/api/gen-ai-code', {
+      prompt:PROMPT
+    });
+    console.log(result.data);
+    const aiResp = result.data;
+
+    const mergedFiles = { ...Lookup.DEFAULT_FILE, ...aiResp?.files };
+    setFiles(mergedFiles);
+  }
+
+
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const handleFileChange = (file) => {
     // In a real app, you would load different example files
@@ -34,8 +59,8 @@ function CodeView() {
           <button
             onClick={() => setActiveTab('code')}
             className={`flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-md transition-all ${activeTab === 'code'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'text-gray-300 hover:bg-[#333333]'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'text-gray-300 hover:bg-[#333333]'
               }`}
           >
             <Code size={16} />
@@ -44,8 +69,8 @@ function CodeView() {
           <button
             onClick={() => setActiveTab('preview')}
             className={`flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-md transition-all ${activeTab === 'preview'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'text-gray-300 hover:bg-[#333333]'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'text-gray-300 hover:bg-[#333333]'
               }`}
           >
             <Play size={16} />
