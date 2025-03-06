@@ -11,29 +11,49 @@ import Lookup from "../../data/Lookup";
 import Colors from '../../data/Colors';
 import { UserDetailsContext } from '../../Contex/UserDetailsContext';
 import { ArrowRight, Link } from 'lucide-react';
+import axios from 'axios';
+import Prompt from '@/data/Prompt';
 
 
 
-function ChatView () {
-    const {id} = useParams();
+function ChatView() {
+    const { id } = useParams();
     const convex = useConvex();
 
     const { userDetails, setUserDetails } = useContext(UserDetailsContext);
     const { messages, setMessages } = useContext(MessgaesContext);
 
     const [userInput, setUserInput] = useState('');
-    
+
     useEffect(() => {
-        id&&GetWorkspaceData();
+        id && GetWorkspaceData();
     }, [id])
 
-    const GetWorkspaceData=async()=>{
-        const result =await convex.query(api.workspace.GetWorkspace,{
-            WorkSpaceId:id});
-        
+    const GetWorkspaceData = async () => {
+        const result = await convex.query(api.workspace.GetWorkspace, {
+            WorkSpaceId: id
+        });
+
         setMessages(result?.messages);
         console.log(result);
     };
+
+    const GetAiResponse = async () => {
+        const PROMPT = JSON.stringify(messages) + Prompt.CHAT_PROMPT;
+        const result = await axios.post('/api/ai-chat', {
+            prompt: PROMPT
+        });
+        console.log(result.data.result);
+    }
+
+    useEffect(() => {
+        if (messages?.length > 0) {
+            const role = messages[messages.length - 1].role;
+            if (role === 'users') {
+                GetAiResponse();
+            }
+        }
+    }, [messages])
 
 
     return (
@@ -81,7 +101,7 @@ function ChatView () {
             </div>
         </div>
 
-  );
+    );
 
 
 };
