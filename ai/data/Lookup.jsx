@@ -10,6 +10,22 @@ export default {
   SIGNIn_AGREEMENT_TEXT: 'By using Bolt, you agree to the collection of usage data for analytics.',
 
   DEFAULT_FILE: {
+    "/App.js": {
+      code: `import React from "react";
+import "./App.css"; // Important: import the Tailwind directives
+
+export default function App() {
+  return (
+    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+      <h1 className="text-3xl font-bold text-blue-600">
+        Hello from App.js with Tailwind!
+      </h1>
+    </div>
+  );
+}
+`
+    },
+
     '/public/index.html': {
       code: `<!DOCTYPE html>
 <html lang="en">
@@ -26,17 +42,22 @@ export default {
     },
     '/App.css': {
       code: `
-            @tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;`
+    },
+    '/index.css': {
+      code: `
+@import "tailwindcss";`
     },
     '/tailwind.config.js': {
       code: `
             /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+content: [
+  "./public/index.html",
+  "./**/*.{js,jsx,ts,tsx}",
+],
   theme: {
     extend: {},
   },
@@ -48,6 +69,7 @@ module.exports = {
 const config = {
   plugins: {
     tailwindcss: {},
+    autoprefixer: {},
   },
 };
 
@@ -70,7 +92,7 @@ export default config;
     "react-chartjs-2": "^5.3.0",
     "chart.js": "^4.4.7",
   },
-  
+
   // Generate package.json content with our dependencies
   getPackageJson() {
     return {
@@ -111,36 +133,36 @@ export default config;
       }
     };
   },
-  
-  PRICING_DESC:'Start with a free account to speed up your workflow on public projects or boost your entire team with instantly-opening production environments.',
-  PRICING_OPTIONS:[
+
+  PRICING_DESC: 'Start with a free account to speed up your workflow on public projects or boost your entire team with instantly-opening production environments.',
+  PRICING_OPTIONS: [
     {
-      name:'Basic',
-      tokens:'50K',
-      value:50000,
-      desc:'Ideal for hobbyists and casual users for light, exploratory use.',
-      price:4.99
+      name: 'Basic',
+      tokens: '50K',
+      value: 50000,
+      desc: 'Ideal for hobbyists and casual users for light, exploratory use.',
+      price: 4.99
     },
     {
-      name:'Starter',
-      tokens:'120K',
-      value:120000,
-      desc:'Designed for professionals who need to use Bolt a few times per week.',
-      price:9.99
+      name: 'Starter',
+      tokens: '120K',
+      value: 120000,
+      desc: 'Designed for professionals who need to use Bolt a few times per week.',
+      price: 9.99
     },
     {
-      name:'Pro',
-      tokens:'2.5M',
-      value:2500000,
-      desc:'Designed for professionals who need to use Bolt a few times per week.',
-      price:19.99
+      name: 'Pro',
+      tokens: '2.5M',
+      value: 2500000,
+      desc: 'Designed for professionals who need to use Bolt a few times per week.',
+      price: 19.99
     },
     {
-      name:'Unlimted (License)',
-      tokens:'Unmited',
-      value:999999999,
-      desc:'Designed for professionals who need to use Bolt a few times per week.',
-      price:49.99
+      name: 'Unlimted (License)',
+      tokens: 'Unmited',
+      value: 999999999,
+      desc: 'Designed for professionals who need to use Bolt a few times per week.',
+      price: 49.99
     }
   ]
 }

@@ -8,14 +8,16 @@ import {
   SandpackFileExplorer,
   SandpackPreview,
 } from "@codesandbox/sandpack-react";
+
 import Lookup from '@/data/Lookup';
-import { Code, Play, Settings, Moon, Sun, ChevronDown } from 'lucide-react';
+import { Code, Play, Settings, Moon, Sun, ChevronDown, Loader2Icon } from 'lucide-react';
 import axios from 'axios';
 import Prompt from '@/data/Prompt';
 import { MessgaesContext } from '@/Contex/MessagesContex';
-import { useMutation } from 'convex/react';
+import { useConvex, useMutation } from 'convex/react';
 import { useParams } from 'next/navigation';
 import { api } from '@/convex/_generated/api';
+
 
 function CodeView() {
 
@@ -24,7 +26,24 @@ function CodeView() {
   const [files, setFiles] = useState(Lookup.DEFAULT_FILE);
   const { messages, setMessages } = useContext(MessgaesContext);
   const UpdateFiles = useMutation(api.workspace.UpdateFiles);
+  const convex= useConvex();
+  const [loading, setLoading] = useState(false);
 
+
+  useEffect(() => {
+    id&&GetFiles();
+  }, [id])
+
+
+  const GetFiles = async () => {
+    setLoading(true);
+    const result = await convex.query(api.workspace.GetWorkspace,{
+      WorkSpaceId:id
+    });
+    const mergedFiles = { ...Lookup.DEFAULT_FILE,...result?.fillData };
+    setFiles(mergedFiles);
+    setLoading(false);
+  }
 
   useEffect(() => {
     if (messages?.length > 0) {
@@ -36,6 +55,8 @@ function CodeView() {
   }, [messages])
 
   const GenerateAiCode =async () => {
+    setLoading(true);
+
     const PROMPT = JSON.stringify(messages) + " " + Prompt.CODE_GEN_PROMPT;
     const result = await axios.post('/api/gen-ai-code', {
       prompt:PROMPT
@@ -49,6 +70,7 @@ function CodeView() {
       WorkSpaceId: id,
       files: aiResp?.files
     });
+    setLoading(false);
   }
 
 
@@ -62,7 +84,7 @@ function CodeView() {
   // };
 
   return (
-    <div className="border h-[85vh] border-gray-800 rounded-lg overflow-hidden shadow-lg">
+    <div className="border relative h-[85vh] border-gray-800 rounded-lg overflow-hidden shadow-lg">
       <div className='bg-[#111111] w-full p-3 border-b border-gray-800 flex justify-between items-center'>
 
 
@@ -120,11 +142,11 @@ function CodeView() {
           {activeTab === 'code' && (
             <>
               <SandpackFileExplorer
-                style={{ height: '80vh', minWidth: '200px' }}
+                style={{ height: '75vh', minWidth: '200px' }}
                 className="border-r border-gray-800"
               />
               <SandpackCodeEditor
-                style={{ height: '80vh', flex: 1 }}
+                style={{ height: '75vh', flex: 1 }}
                 showTabs
                 showLineNumbers
                 showInlineErrors
@@ -134,13 +156,19 @@ function CodeView() {
           )}
           {activeTab === 'preview' && (
             <SandpackPreview
-              style={{ height: '80vh' }}
+              style={{ height: '75vh' }}
               showNavigator={true}
               showRefreshButton={true}
             />
           )}
         </SandpackLayout>
       </SandpackProvider>
+
+     {loading && <div className='p-10 bg-gray-900 opacity-80 absolute top-0 rounded-lg w-full h-full flex items-center justify-center '>
+        <Loader2Icon className='animate-spin h-10 w-10 text-white' />
+          <h2 className='text-white'>Genrating Your Code...</h2>
+
+      </div>}
     </div>
   );
 };
