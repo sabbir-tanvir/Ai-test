@@ -9,6 +9,8 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import SignInDialog from '@/components/Custom/SignInDialog';
 import { useConvex } from 'convex/react';
 import { api } from '../convex/_generated/api';
+import { SidebarProvider } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/Custom/AppSidebar";
 
 
 export const DialogContext = React.createContext();
@@ -63,7 +65,11 @@ function Providor({ children }) {
                                 disableTransitionOnChange
                             >
                                 <Header />
+                                <SidebarProvider>
+                                <AppSidebar />
                                 {children}
+                                </SidebarProvider>
+
                             </NextThemesProvidor>
                         </DialogContext.Provider>
                     </MessgaesContext.Provider>
@@ -84,7 +90,10 @@ function Providor({ children }) {
                                 disableTransitionOnChange
                             >
                                 <Header />
+                                <SidebarProvider>
+                                <AppSidebar />
                                 {children}
+                                </SidebarProvider>
                                 <SignInDialog
                                     openDilog={openDialog}
                                     closeDialog={(v) => setOpenDialog(v)}
