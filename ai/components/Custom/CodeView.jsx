@@ -30,7 +30,7 @@ function CodeView() {
 
   const GenerateAiCode =async () => {
     const PROMPT = messages[messages?.length - 1].content + " " + Prompt.CODE_GEN_PROMPT;
-    const result = axios.post('/api/gen-ai-code', {
+    const result = await axios.post('/api/gen-ai-code', {
       prompt:PROMPT
     });
     console.log(result.data);
