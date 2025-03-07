@@ -78,7 +78,7 @@ function ChatView() {
 
     return (
         <div className='reletive h-[85vh] flex flex-col'>
-            <div className='flex-1 overflow-y-scroll p-5 scrollbar-hide '>
+            <div className='flex-1 overflow-y-scroll  scrollbar-hide '>
                 {Array.isArray(messages) && messages?.map((msg, index) => (
                     <div key={index}
                         className='p-3 rounded-lg mb-2 flex gap-2 items-start'
@@ -113,7 +113,7 @@ function ChatView() {
             </div>
 
             {/* Input Section */}
-            <div className="p-5 border rounded-xl max-w-2xl w-full mt-3"
+            <div className="p-5 border rounded-xl max-w-2xl w-full mt-5"
                 style={{ backgroundColor: Colors.BACKGROUND }}
             >
                 <div className="flex gap-2">

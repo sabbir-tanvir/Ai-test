@@ -9,7 +9,6 @@ export default {
   SIGNIN_SUBHEADING: 'To use Bolt you must log into an existing account or create one.',
   SIGNIn_AGREEMENT_TEXT: 'By using Bolt, you agree to the collection of usage data for analytics.',
 
-
   DEFAULT_FILE: {
     '/public/index.html': {
       code: `<!DOCTYPE html>
@@ -57,14 +56,13 @@ export default config;
     }
   },
   DEPENDANCY: {
-
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    autoprefixer: "^10.0.0",
+    "autoprefixer": "^10.0.0",
     "uuid4": "^2.0.3",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "lucide-react": "^0.469.0",
+    "lucide-react": "^0.477.0", // Fixed duplicate, kept latest version
     "react-router-dom": "^7.1.1",
     "firebase": "^11.1.0",
     "@google/generative-ai": "^0.21.0",
@@ -72,6 +70,48 @@ export default config;
     "react-chartjs-2": "^5.3.0",
     "chart.js": "^4.4.7",
   },
+  
+  // Generate package.json content with our dependencies
+  getPackageJson() {
+    return {
+      "name": "my-bolt-app",
+      "version": "1.0.0",
+      "description": "App built with Bolt.New 2.0",
+      "dependencies": {
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-scripts": "^5.0.0",
+        "lucide-react": "^0.477.0",
+        ...this.DEPENDANCY
+      },
+      "main": "/index.js",
+      "devDependencies": {},
+      "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+      },
+      "eslintConfig": {
+        "extends": [
+          "react-app"
+        ]
+      },
+      "browserslist": {
+        "production": [
+          ">0.2%",
+          "not dead",
+          "not op_mini all"
+        ],
+        "development": [
+          "last 1 chrome version",
+          "last 1 firefox version",
+          "last 1 safari version"
+        ]
+      }
+    };
+  },
+  
   PRICING_DESC:'Start with a free account to speed up your workflow on public projects or boost your entire team with instantly-opening production environments.',
   PRICING_OPTIONS:[
     {
@@ -103,6 +143,4 @@ export default config;
       price:49.99
     }
   ]
-
-
 }

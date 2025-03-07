@@ -13,11 +13,18 @@ import { Code, Play, Settings, Moon, Sun, ChevronDown } from 'lucide-react';
 import axios from 'axios';
 import Prompt from '@/data/Prompt';
 import { MessgaesContext } from '@/Contex/MessagesContex';
+import { useMutation } from 'convex/react';
+import { useParams } from 'next/navigation';
+import { api } from '@/convex/_generated/api';
 
 function CodeView() {
+
+  const { id } = useParams();
   const [activeTab, setActiveTab] = useState('code');
   const [files, setFiles] = useState(Lookup.DEFAULT_FILE);
-    const { messages, setMessages } = useContext(MessgaesContext);
+  const { messages, setMessages } = useContext(MessgaesContext);
+  const UpdateFiles = useMutation(api.workspace.UpdateFiles);
+
 
   useEffect(() => {
     if (messages?.length > 0) {
@@ -29,7 +36,7 @@ function CodeView() {
   }, [messages])
 
   const GenerateAiCode =async () => {
-    const PROMPT = messages[messages?.length - 1].content + " " + Prompt.CODE_GEN_PROMPT;
+    const PROMPT = JSON.stringify(messages) + " " + Prompt.CODE_GEN_PROMPT;
     const result = await axios.post('/api/gen-ai-code', {
       prompt:PROMPT
     });
@@ -38,20 +45,24 @@ function CodeView() {
 
     const mergedFiles = { ...Lookup.DEFAULT_FILE, ...aiResp?.files };
     setFiles(mergedFiles);
+    await UpdateFiles({
+      WorkSpaceId: id,
+      files: aiResp?.files
+    });
   }
 
 
   const [isDarkMode, setIsDarkMode] = useState(true);
 
-  const handleFileChange = (file) => {
-    // In a real app, you would load different example files
-    setSelectedFile(file);
-    // For now, we'll just use the default files
-    setFiles(Lookup.DEFAULT_FILE);
-  };
+  // const handleFileChange = (file) => {
+  //   // In a real app, you would load different example files
+  //   setSelectedFile(file);
+  //   // For now, we'll just use the default files
+  //   setFiles(Lookup.DEFAULT_FILE);
+  // };
 
   return (
-    <div className="border border-gray-800 rounded-lg overflow-hidden shadow-lg">
+    <div className="border h-[85vh] border-gray-800 rounded-lg overflow-hidden shadow-lg">
       <div className='bg-[#111111] w-full p-3 border-b border-gray-800 flex justify-between items-center'>
 
 
@@ -101,7 +112,7 @@ function CodeView() {
         theme={isDarkMode ? 'dark' : 'light'}
         customSetup={{
           dependencies: {
-            ...Lookup.DEPENDENCIES
+            ...Lookup.DEPENDANCY
           }
         }}
       >

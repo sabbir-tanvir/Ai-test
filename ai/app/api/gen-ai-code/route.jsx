@@ -7,7 +7,7 @@ export async function POST(req) {
     try {
         const result =await GenAiCode.sendMessage(prompt);
         const resp = result.response.text();
-        return NextResponse.json(resp);
+        return NextResponse.json(JSON.parse(resp));
     }
     catch (e) {
         return NextResponse.json({error:resp})
