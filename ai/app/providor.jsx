@@ -3,25 +3,25 @@ import React from "react";
 import { use, useState, useEffect } from 'react';
 import { ThemeProvider as NextThemesProvidor } from 'next-themes';
 import Header from '@/components/Custom/Header';
-import { MessgaesContext } from '@/Contex/MessagesContex';
-import { UserDetailsContext } from '@/Contex/UserDetailsContext';
+import { MessgaesContext } from '@/context/MessagesContex';
+import { UserDetailsContext } from '@/context/UserDetailsContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import SignInDialog from '@/components/Custom/SignInDialog';
+// import SignInDialog from '@/components/Custom/SignInDialog';
 import { useConvex } from 'convex/react';
 import { api } from '../convex/_generated/api';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/Custom/AppSidebar";
 
 
-export const DialogContext = React.createContext();
+// export const DialogContext = React.createContext();
 
 
 function Providor({ children }) {
 
-    const [mounted, setMounted] = useState(false);
+    // const [mounted, setMounted] = useState(false);
     const [messages, setMessages] = useState();
     const [userDetails, setUserDetails] = useState();
-    const [openDialog, setOpenDialog] = useState(false);
+    // const [openDialog, setOpenDialog] = useState(false);
 
     const convex = useConvex();
 
@@ -40,49 +40,49 @@ function Providor({ children }) {
         }
     }
 
-    useEffect(() => {
-        setMounted(true);
-        // Debug log to check if environment variable is loaded
-        console.log('Google Client ID:', process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
-    }, []);
+    // useEffect(() => {
+    //     setMounted(true);
+    //     // Debug log to check if environment variable is loaded
+    //     console.log('Google Client ID:', process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
+    // }, []);
 
-    if (!mounted) {
-        return null;
-    }
+    // if (!mounted) {
+    //     return null;
+    // }
 
     // If no client ID is available, render without Google OAuth
-    if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
-        console.warn('Missing Google OAuth Client ID. Google Sign In will not work.');
-        return (
-            <div>
-                <UserDetailsContext.Provider value={{ userDetails, setUserDetails }}>
-                    <MessgaesContext.Provider value={{ messages, setMessages }}>
-                        <DialogContext.Provider value={{ openDialog, setOpenDialog }}>
-                            <NextThemesProvidor
-                                attribute="class"
-                                defaultTheme="dark"
-                                enableSystem
-                                disableTransitionOnChange
-                            >
-                                <Header />
-                                <SidebarProvider>
-                                <AppSidebar />
-                                {children}
-                                </SidebarProvider>
+    // if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
+    //     console.warn('Missing Google OAuth Client ID. Google Sign In will not work.');
+    //     return (
+    //         <div>
+    //             <UserDetailsContext.Provider value={{ userDetails, setUserDetails }}>
+    //                 <MessgaesContext.Provider value={{ messages, setMessages }}>
+    //                     <DialogContext.Provider value={{ openDialog, setOpenDialog }}>
+    //                         <NextThemesProvidor
+    //                             attribute="class"
+    //                             defaultTheme="dark"
+    //                             enableSystem
+    //                             disableTransitionOnChange
+    //                         >
+    //                             <Header />
+    //                             <SidebarProvider>
+    //                             <AppSidebar />
+    //                             {children}
+    //                             </SidebarProvider>
 
-                            </NextThemesProvidor>
-                        </DialogContext.Provider>
-                    </MessgaesContext.Provider>
-                </UserDetailsContext.Provider>
-            </div>
-        );
-    }
+    //                         </NextThemesProvidor>
+    //                     </DialogContext.Provider>
+    //                 </MessgaesContext.Provider>
+    //             </UserDetailsContext.Provider>
+    //         </div>
+    //     );
+    // }
     return (
         <div>
             <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
                 <UserDetailsContext.Provider value={{ userDetails, setUserDetails }}>
                     <MessgaesContext.Provider value={{ messages, setMessages }}>
-                        <DialogContext.Provider value={{ openDialog, setOpenDialog }}>
+                        {/* <DialogContext.Provider value={{ openDialog, setOpenDialog }}> */}
                             <NextThemesProvidor
                                 attribute="class"
                                 defaultTheme="dark"
@@ -90,16 +90,16 @@ function Providor({ children }) {
                                 disableTransitionOnChange
                             >
                                 <Header />
-                                <SidebarProvider>
+                                <SidebarProvider defaultOpen={true}>
                                 <AppSidebar />
                                 {children}
                                 </SidebarProvider>
-                                <SignInDialog
+                                {/* <SignInDialog
                                     openDilog={openDialog}
                                     closeDialog={(v) => setOpenDialog(v)}
-                                />
+                                /> */}
                             </NextThemesProvidor>
-                        </DialogContext.Provider>
+                        {/* </DialogContext.Provider> */}
                     </MessgaesContext.Provider>
                 </UserDetailsContext.Provider>
             </GoogleOAuthProvider>

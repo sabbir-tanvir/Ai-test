@@ -16,7 +16,7 @@ import {
 import Lookup from '@/data/Lookup';
 import { Button } from '../ui/button';
 import { useGoogleLogin } from '@react-oauth/google';
-import { UserDetailsContext } from '@/Contex/UserDetailsContext';
+import { UserDetailsContext } from '@/context/UserDetailsContext';
 import { useMutation } from 'convex/react';
 
 function SignInDialog({ openDilog, closeDialog }) {

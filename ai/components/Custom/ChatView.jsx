@@ -1,6 +1,6 @@
 "use client";
 
-import { MessgaesContext } from '@/Contex/MessagesContex';
+import { MessgaesContext } from '@/context/MessagesContex';
 import { useConvex, useMutation } from 'convex/react';
 import { useParams } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react';
@@ -9,11 +9,12 @@ import Image from 'next/image';
 import Lookup from "../../data/Lookup";
 
 import Colors from '../../data/Colors';
-import { UserDetailsContext } from '../../Contex/UserDetailsContext';
+import { UserDetailsContext } from '../../context/UserDetailsContext';
 import { ArrowRight, Link, Loader2Icon } from 'lucide-react';
 import axios from 'axios';
 import Prompt from '@/data/Prompt';
 import Markdown from 'react-markdown'
+import { useSidebar } from '../ui/sidebar';
 
 
 
@@ -26,7 +27,7 @@ function ChatView() {
     const [loading, setLoading] = useState(false);
     const [userInput, setUserInput] = useState('');
     const UpdateMessages = useMutation(api.workspace.UpdateMessages);
-
+    const { toggoleSidebar } = useSidebar();
 
     useEffect(() => {
         id && GetWorkspaceData();
@@ -55,14 +56,14 @@ function ChatView() {
         const result = await axios.post('/api/ai-chat', {
             prompt: PROMPT
         });
-        const aiRes= {
+        const aiRes = {
             role: 'ai',
             content: result.data.result
         }
         setMessages(prev => [...prev, aiRes])
         await UpdateMessages({
-            messages:[...messages,aiRes],
-            WorkSpaceId:id
+            messages: [...messages, aiRes],
+            WorkSpaceId: id
         })
         setLoading(false);
     }
@@ -78,7 +79,7 @@ function ChatView() {
 
     return (
         <div className='reletive h-[85vh] flex flex-col'>
-            <div className='flex-1 overflow-y-scroll  scrollbar-hide '>
+            <div className='flex-1 overflow-y-scroll  scrollbar-hide pl-5'>
                 {Array.isArray(messages) && messages?.map((msg, index) => (
                     <div key={index}
                         className='p-3 rounded-lg mb-2 flex gap-2 items-start'
@@ -94,40 +95,47 @@ function ChatView() {
                                 height={40}
                                 className="rounded-full"
                             />}
-                            <div className='flex flex-col'>
+                        <div className='flex flex-col'>
                             <Markdown >{msg.content}</Markdown>
 
-                            </div>
-                        
+                        </div>
+
 
 
                     </div>
                 ))}
                 {loading && <div className='p-3 rounded-lg mb-2 flex gap-2 items-start leading-5'
                     style={{
-                        backgroundColor:Colors.CHAT_BACKGROUND}}
-                    >
+                        backgroundColor: Colors.CHAT_BACKGROUND
+                    }}
+                >
                     <Loader2Icon className='animate-spin' />
                     <h2>Genarating response...</h2>
                 </div>}
             </div>
 
             {/* Input Section */}
-            <div className="p-5 border rounded-xl max-w-2xl w-full mt-5"
-                style={{ backgroundColor: Colors.BACKGROUND }}
-            >
-                <div className="flex gap-2">
-                    <textarea placeholder={Lookup.INPUT_PLACEHOLDER}
-                    value={userInput}
-                        onChange={(event) => setUserInput(event.target.value)}
-                        className="outline-none bg-transparent w-full h-32 max-h-56 resize-none"
-                    ></textarea>
-                    {userInput.trim().length > 0 && <ArrowRight
-                        onClick={() => onGenerate(userInput)}
-                        className="bg-blue-500 p-2 h-8 w-8 rounded-md cursor-pointer" />}
-                </div>
-                <div>
-                    <Link className="h-5 w-5" />
+            <div className='flex gap-2 items-end'>
+                {userDetails && <Image src={userDetails?.picture}
+                    className='rounded-full cursor-pointer'
+                    onClick={toggoleSidebar}
+                    alt='user' width={30} height={30} />}
+                <div className="p-5 border rounded-xl max-w-2xl w-full mt-5"
+                    style={{ backgroundColor: Colors.BACKGROUND }}
+                >
+                    <div className="flex gap-2">
+                        <textarea placeholder={Lookup.INPUT_PLACEHOLDER}
+                            value={userInput}
+                            onChange={(event) => setUserInput(event.target.value)}
+                            className="outline-none bg-transparent w-full h-32 max-h-56 resize-none"
+                        ></textarea>
+                        {userInput.trim().length > 0 && <ArrowRight
+                            onClick={() => onGenerate(userInput)}
+                            className="bg-blue-500 p-2 h-8 w-8 rounded-md cursor-pointer" />}
+                    </div>
+                    <div>
+                        <Link className="h-5 w-5" />
+                    </div>
                 </div>
             </div>
         </div>

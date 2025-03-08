@@ -13,7 +13,7 @@ import Lookup from '@/data/Lookup';
 import { Code, Play, Settings, Moon, Sun, ChevronDown, Loader2Icon } from 'lucide-react';
 import axios from 'axios';
 import Prompt from '@/data/Prompt';
-import { MessgaesContext } from '@/Contex/MessagesContex';
+import { MessgaesContext } from '@/context/MessagesContex';
 import { useConvex, useMutation } from 'convex/react';
 import { useParams } from 'next/navigation';
 import { api } from '@/convex/_generated/api';
