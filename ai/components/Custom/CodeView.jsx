@@ -26,21 +26,21 @@ function CodeView() {
   const [files, setFiles] = useState(Lookup.DEFAULT_FILE);
   const { messages, setMessages } = useContext(MessgaesContext);
   const UpdateFiles = useMutation(api.workspace.UpdateFiles);
-  const convex= useConvex();
+  const convex = useConvex();
   const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
-    id&&GetFiles();
+    id && GetFiles();
   }, [id])
 
 
   const GetFiles = async () => {
     setLoading(true);
-    const result = await convex.query(api.workspace.GetWorkspace,{
-      WorkSpaceId:id
+    const result = await convex.query(api.workspace.GetWorkspace, {
+      WorkSpaceId: id
     });
-    const mergedFiles = { ...Lookup.DEFAULT_FILE,...result?.fillData };
+    const mergedFiles = { ...Lookup.DEFAULT_FILE, ...result?.fillData };
     setFiles(mergedFiles);
     setLoading(false);
   }
@@ -54,12 +54,12 @@ function CodeView() {
     }
   }, [messages])
 
-  const GenerateAiCode =async () => {
+  const GenerateAiCode = async () => {
     setLoading(true);
 
     const PROMPT = JSON.stringify(messages) + " " + Prompt.CODE_GEN_PROMPT;
     const result = await axios.post('/api/gen-ai-code', {
-      prompt:PROMPT
+      prompt: PROMPT
     });
     console.log(result.data);
     const aiResp = result.data;
@@ -164,9 +164,9 @@ function CodeView() {
         </SandpackLayout>
       </SandpackProvider>
 
-     {loading && <div className='p-10 bg-gray-900 opacity-80 absolute top-0 rounded-lg w-full h-full flex items-center justify-center '>
+      {loading && <div className='p-10 bg-gray-900 opacity-80 absolute top-0 rounded-lg w-full h-full flex items-center justify-center '>
         <Loader2Icon className='animate-spin h-10 w-10 text-white' />
-          <h2 className='text-white'>Genrating Your Code...</h2>
+        <h2 className='text-white'>Genrating Your Code...</h2>
 
       </div>}
     </div>

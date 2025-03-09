@@ -5,6 +5,7 @@ import {
     SidebarFooter,
     SidebarGroup,
     SidebarHeader,
+    useSidebar,
 } from "@/components/ui/sidebar"
 import Image from 'next/image';
 import { Button } from '../ui/button';
@@ -14,10 +15,11 @@ import SideBarFooter from './SideBarFooter';
 
 
 function AppSidebar() {
+    const { toggleSidebar } = useSidebar();
     return (
         <Sidebar>
             <SidebarHeader className="p-4">
-                <Image src={'/logo.png'} alt="Logo" width={30} height={30} />
+                <Image onClick={toggleSidebar} src={'/logo.png'} alt="Logo" width={30} height={30} />
                 <Button className="mt-5"><MessageCircleCode /> Start New Chat</Button>
 
             </SidebarHeader>

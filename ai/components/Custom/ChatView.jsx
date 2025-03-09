@@ -17,7 +17,6 @@ import Markdown from 'react-markdown'
 import { useSidebar } from '../ui/sidebar';
 
 
-
 function ChatView() {
     const { id } = useParams();
     const convex = useConvex();
@@ -27,7 +26,7 @@ function ChatView() {
     const [loading, setLoading] = useState(false);
     const [userInput, setUserInput] = useState('');
     const UpdateMessages = useMutation(api.workspace.UpdateMessages);
-    const { toggoleSidebar } = useSidebar();
+    const { toggleSidebar } = useSidebar();
 
     useEffect(() => {
         id && GetWorkspaceData();
@@ -118,7 +117,7 @@ function ChatView() {
             <div className='flex gap-2 items-end'>
                 {userDetails && <Image src={userDetails?.picture}
                     className='rounded-full cursor-pointer'
-                    onClick={toggoleSidebar}
+                    onClick={toggleSidebar}
                     alt='user' width={30} height={30} />}
                 <div className="p-5 border rounded-xl max-w-2xl w-full mt-5"
                     style={{ backgroundColor: Colors.BACKGROUND }}
