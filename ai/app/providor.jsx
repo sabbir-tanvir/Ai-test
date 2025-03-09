@@ -11,6 +11,7 @@ import { useConvex } from 'convex/react';
 import { api } from '../convex/_generated/api';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/Custom/AppSidebar";
+import { useRouter } from "next/navigation";
 
 
 export const DialogContext = React.createContext();
@@ -22,6 +23,7 @@ function Providor({ children }) {
     const [messages, setMessages] = useState();
     const [userDetails, setUserDetails] = useState();
     const [openDialog, setOpenDialog] = useState(false);
+    const router = useRouter();
 
     const convex = useConvex();
 
@@ -32,9 +34,13 @@ function Providor({ children }) {
     }, []);
 
     const IsAuthenticated = async () => {
-        if (typeof window !== 'undefined') {
-            const user = JSON.parse(localStorage.getItem('user'));
-            const result = await convex.query(api.user.GetUser, { email: user.email });
+        if (typeof window !== undefined) {
+            const user = JSON.parse(localStorage.getItem('user'))
+            if(!user){
+                router.push('/')
+                return;
+            }
+            const result = await convex.query(api.user.GetUser, { email:user?.email });
             setUserDetails(result);
             console.log(result);
         }
