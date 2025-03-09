@@ -18,8 +18,8 @@ function AppSidebar() {
     const { toggleSidebar } = useSidebar();
     return (
         <Sidebar>
-            <SidebarHeader className="p-4">
-                <Image onClick={toggleSidebar} src={'/logo.png'} alt="Logo" width={30} height={30} />
+            <SidebarHeader className="p-3">
+                <Image onClick={toggleSidebar} src={'/logo.png'} alt="Logo" width={40} height={40} />
                 <Button className="mt-5"><MessageCircleCode /> Start New Chat</Button>
 
             </SidebarHeader>

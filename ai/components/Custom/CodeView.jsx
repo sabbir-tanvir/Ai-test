@@ -84,7 +84,11 @@ function CodeView() {
   // };
 
   return (
-    <div className="border relative h-[85vh] border-gray-800 rounded-lg overflow-hidden shadow-lg">
+    <div className='pt-12'>
+
+
+
+    <div className="border relative  h-[84vh] border-gray-800 rounded-lg overflow-hidden shadow-lg">
       <div className='bg-[#111111] w-full p-3 border-b border-gray-800 flex justify-between items-center'>
 
 
@@ -169,6 +173,7 @@ function CodeView() {
         <h2 className='text-white'>Genrating Your Code...</h2>
 
       </div>}
+    </div>
     </div>
   );
 };
