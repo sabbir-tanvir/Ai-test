@@ -2,7 +2,7 @@
 "use client"
 import React from 'react';
 
-import { v4 as uuid4 } from 'uuid';
+import { v4 as uuid4 } from 'uuid4';
 import { api } from "@/convex/_generated/api";
 import  { useContext } from 'react';
 import axios from 'axios';
