@@ -2,7 +2,7 @@
 "use client"
 import React from 'react';
 
-import { v4 as uuid4 } from 'uuid4';
+import { v4 as uuidv4 } from 'uuid';
 import { api } from "@/convex/_generated/api";
 import  { useContext } from 'react';
 import axios from 'axios';
@@ -39,7 +39,7 @@ function SignInDialog({ openDilog, closeDialog }) {
         name: user?.name,
         email: user?.email,
         picture: user?.picture,
-        uid: uuid4()
+        uid: uuidv4()
       })
   
       if (typeof window !== 'undefined') {
